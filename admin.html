@@ -64,7 +64,7 @@
             participantes.forEach((nome) => {
                 const uniqueId = crypto.randomUUID(); // ID único
                 const data = btoa(JSON.stringify({ attr: atribuicoes[nome] })); // Codifica o nome
-                const linkSecreto = `https://SEU-USUARIO.github.io/amigo-secreto/index.html?id=${uniqueId}&data=${data}`; // Substitua pela sua URL
+                const linkSecreto = `https://gustavolegieri.github.io/amigo-secreto/index.html?id=${uniqueId}&data=${data}`; // Substitua pela sua URL
                 const mensagem = encodeURIComponent(`Olá ${nome}, seu link secreto do amigo secreto é: ${linkSecreto}. Abra apenas você! 🎄`);
                 const linkWhatsApp = `https://wa.me/55${telefones[nome]}?text=${mensagem}`;
                 output += `${nome}: <a href="${linkWhatsApp}" target="_blank" class="whatsapp-link">Enviar para ${nome} via WhatsApp</a>\n`;
