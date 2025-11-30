@@ -8,23 +8,41 @@
         body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
         input, button { margin: 10px; padding: 10px; }
         #links { margin-top: 20px; white-space: pre-wrap; }
+        .whatsapp-link { color: #25D366; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
     <h1>Admin - Gerar Amigo Secreto 🎄</h1>
-    <p>Insira os nomes dos participantes (um por linha):</p>
-    <textarea id="nomes" rows="10" cols="30" placeholder="João&#10;Maria&#10;Pedro&#10;..."></textarea><br>
-    <button onclick="gerarSorteio()">Gerar Sorteio e Links</button>
+    <p>Insira os participantes (nome e telefone, um por linha, separados por vírgula). Ex: João,11987654321</p>
+    <textarea id="dados" rows="10" cols="40" placeholder="João,11987654321&#10;Maria,11987654322&#10;Pedro,11987654323&#10;..."></textarea><br>
+    <button onclick="gerarSorteio()">Gerar Sorteio e Links do WhatsApp</button>
     <div id="links"></div>
 
     <script>
         function gerarSorteio() {
-            const nomesTexto = document.getElementById('nomes').value.trim();
-            if (!nomesTexto) {
-                alert('Insira pelo menos 2 nomes!');
+            const dadosTexto = document.getElementById('dados').value.trim();
+            if (!dadosTexto) {
+                alert('Insira pelo menos 2 participantes com nome e telefone!');
                 return;
             }
-            const participantes = nomesTexto.split('\n').map(n => n.trim()).filter(n => n);
+            const linhas = dadosTexto.split('\n').map(l => l.trim()).filter(l => l);
+            const participantes = [];
+            const telefones = {};
+            for (let linha of linhas) {
+                const partes = linha.split(',');
+                if (partes.length !== 2) {
+                    alert('Formato inválido! Use: Nome,Telefone');
+                    return;
+                }
+                const nome = partes[0].trim();
+                const tel = partes[1].trim().replace(/\D/g, ''); // Remove não-dígitos
+                if (!nome || !tel || tel.length < 10) {
+                    alert('Nome ou telefone inválido!');
+                    return;
+                }
+                participantes.push(nome);
+                telefones[nome] = tel;
+            }
             if (participantes.length < 2) {
                 alert('Precisa de pelo menos 2 participantes!');
                 return;
@@ -41,15 +59,18 @@
                 atribuicoes[nome] = disponiveis.splice(index, 1)[0];
             }
 
-            // Gera IDs únicos e links
-            let links = '';
+            // Gera IDs únicos, links secretos e links do WhatsApp
+            let output = 'Clique nos links abaixo para enviar via WhatsApp:\n\n';
             participantes.forEach((nome) => {
-                const uniqueId = crypto.randomUUID(); // ID único e aleatório
-                const data = btoa(JSON.stringify({ attr: atribuicoes[nome] })); // Codifica apenas o nome atribuído
-                links += `${nome}: https://SEU-USUARIO.github.io/amigo-secreto/index.html?id=${uniqueId}&data=${data}\n`; // Substitua pela sua URL
+                const uniqueId = crypto.randomUUID(); // ID único
+                const data = btoa(JSON.stringify({ attr: atribuicoes[nome] })); // Codifica o nome
+                const linkSecreto = `https://SEU-USUARIO.github.io/amigo-secreto/index.html?id=${uniqueId}&data=${data}`; // Substitua pela sua URL
+                const mensagem = encodeURIComponent(`Olá ${nome}, seu link secreto do amigo secreto é: ${linkSecreto}. Abra apenas você! 🎄`);
+                const linkWhatsApp = `https://wa.me/55${telefones[nome]}?text=${mensagem}`;
+                output += `${nome}: <a href="${linkWhatsApp}" target="_blank" class="whatsapp-link">Enviar para ${nome} via WhatsApp</a>\n`;
             });
 
-            document.getElementById('links').innerText = 'Copie e envie esses links (um para cada pessoa). NÃO compartilhe!\n\n' + links;
+            document.getElementById('links').innerHTML = output;
         }
     </script>
 </body>
