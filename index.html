@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo Secreto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        h1 { color: #333; }
+        .result { font-size: 24px; margin: 20px; padding: 20px; border: 2px solid #4CAF50; border-radius: 10px; display: inline-block; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Amigo Secreto 🎄</h1>
+    <p>Seu nome secreto para presentear é:</p>
+    <div id="result" class="result"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get('data');
+
+        if (data) {
+            try {
+                const decoded = JSON.parse(atob(data)); // Decodifica o hash
+                document.getElementById('result').innerText = decoded.attr;
+            } catch (e) {
+                document.getElementById('result').innerHTML = '<span class="error">Link inválido!</span>';
+            }
+        } else {
+            document.getElementById('result').innerHTML = '<span class="error">Acesso não autorizado!</span>';
+        }
+    </script>
+</body>
+</html>

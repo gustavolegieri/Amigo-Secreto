@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Amigo Secreto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input, button { margin: 10px; padding: 10px; }
+        #links { margin-top: 20px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Admin - Gerar Amigo Secreto 🎄</h1>
+    <p>Insira os nomes dos participantes (um por linha):</p>
+    <textarea id="nomes" rows="10" cols="30" placeholder="João&#10;Maria&#10;Pedro&#10;..."></textarea><br>
+    <button onclick="gerarSorteio()">Gerar Sorteio e Links</button>
+    <div id="links"></div>
+
+    <script>
+        function gerarSorteio() {
+            const nomesTexto = document.getElementById('nomes').value.trim();
+            if (!nomesTexto) {
+                alert('Insira pelo menos 2 nomes!');
+                return;
+            }
+            const participantes = nomesTexto.split('\n').map(n => n.trim()).filter(n => n);
+            if (participantes.length < 2) {
+                alert('Precisa de pelo menos 2 participantes!');
+                return;
+            }
+
+            // Gera atribuições únicas (ninguém tira o próprio nome)
+            let disponiveis = [...participantes];
+            let atribuicoes = {};
+            for (let nome of participantes) {
+                let index;
+                do {
+                    index = Math.floor(Math.random() * disponiveis.length);
+                } while (disponiveis[index] === nome);
+                atribuicoes[nome] = disponiveis.splice(index, 1)[0];
+            }
+
+            // Gera links únicos (baseados em hash para "ocultar" o ID, mas ainda secreto)
+            let links = '';
+            participantes.forEach((nome, i) => {
+                const hash = btoa(JSON.stringify({ id: i, attr: atribuicoes[nome] })); // Codifica o resultado
+                links += `${nome}: https://seu-site.com/index.html?data=${hash}\n`; // Substitua pela URL real
+            });
+
+            document.getElementById('links').innerText = 'Copie e envie esses links (um para cada pessoa):\n\n' + links;
+        }
+    </script>
+</body>
+</html>
