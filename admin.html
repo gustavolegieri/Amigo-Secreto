@@ -41,14 +41,15 @@
                 atribuicoes[nome] = disponiveis.splice(index, 1)[0];
             }
 
-            // Gera links únicos (baseados em hash para "ocultar" o ID, mas ainda secreto)
+            // Gera IDs únicos e links
             let links = '';
-            participantes.forEach((nome, i) => {
-                const hash = btoa(JSON.stringify({ id: i, attr: atribuicoes[nome] })); // Codifica o resultado
-                links += `${nome}: https://seu-site.com/index.html?data=${hash}\n`; // Substitua pela URL real
+            participantes.forEach((nome) => {
+                const uniqueId = crypto.randomUUID(); // ID único e aleatório
+                const data = btoa(JSON.stringify({ attr: atribuicoes[nome] })); // Codifica apenas o nome atribuído
+                links += `${nome}: https://SEU-USUARIO.github.io/amigo-secreto/index.html?id=${uniqueId}&data=${data}\n`; // Substitua pela sua URL
             });
 
-            document.getElementById('links').innerText = 'Copie e envie esses links (um para cada pessoa):\n\n' + links;
+            document.getElementById('links').innerText = 'Copie e envie esses links (um para cada pessoa). NÃO compartilhe!\n\n' + links;
         }
     </script>
 </body>

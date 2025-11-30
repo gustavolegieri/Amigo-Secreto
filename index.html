@@ -18,17 +18,18 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
         const data = urlParams.get('data');
 
-        if (data) {
+        if (id && data) {
             try {
-                const decoded = JSON.parse(atob(data)); // Decodifica o hash
+                const decoded = JSON.parse(atob(data)); // Decodifica o nome atribuído
                 document.getElementById('result').innerText = decoded.attr;
             } catch (e) {
-                document.getElementById('result').innerHTML = '<span class="error">Link inválido!</span>';
+                document.getElementById('result').innerHTML = '<span class="error">Link inválido ou acesso não autorizado!</span>';
             }
         } else {
-            document.getElementById('result').innerHTML = '<span class="error">Acesso não autorizado!</span>';
+            document.getElementById('result').innerHTML = '<span class="error">Link inválido ou acesso não autorizado!</span>';
         }
     </script>
 </body>
